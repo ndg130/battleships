@@ -35,7 +35,7 @@ function App() {
 
     return (
         <main>
-            <h1 style={{color: 'white', textAlign: 'center'}}>{shipCells[0]}</h1>
+            <h1 style={{color: 'white', textAlign: 'center'}}>Battleships</h1>
             <div id='battleGrid'>
                 <Grid 
                     gridSize={gridSize}

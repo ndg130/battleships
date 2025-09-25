@@ -10,8 +10,8 @@ export default function Grid({ gridSize, shipCells, hitCells }) {
                     key={index} 
                     index={index} 
                     role="gridCell"
-                    hasShip={shipCells.includes(index)}
-                    isHit={hitCells.includes(index)}
+                    hasShip={shipCells.flat().includes(index)}
+                    isHit={hitCells.flat().includes(index)}
                     gridSize={gridSize}
                 />
             ))}

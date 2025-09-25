@@ -8,7 +8,7 @@ function App() {
         {
             id: 1,
             name: 'Battleship',
-            size: 1
+            size: 5
         },
         {
             id: 2,
@@ -35,7 +35,7 @@ function App() {
 
     return (
         <main>
-            <h1 style={{color: 'white', textAlign: 'center'}}>Battleships</h1>
+            <h1 style={{color: 'white', textAlign: 'center'}}>{shipCells[0]}</h1>
             <div id='battleGrid'>
                 <Grid 
                     gridSize={gridSize}
@@ -60,13 +60,13 @@ function App() {
                     autoComplete='off'
                     autoCorrect='off'
                     autoCapitalize='on'
-                    disabled={remainingCells.length === 0 ? 'disabled' : ''}
+                    disabled={remainingCells.flat().length === 0 ? 'disabled' : ''}
                     />
-                    {remainingCells.length > 0 && (
+                    {remainingCells.flat().length > 0 && (
                         <button type="submit" className='controls__button'>Submit</button>
                     )}
 
-                    {remainingCells.length === 0 && (
+                    {remainingCells.flat().length === 0 && (
                         <button type="button" className='controls__button' onClick={initGame}>Restart</button>
                     )}
                 </form>

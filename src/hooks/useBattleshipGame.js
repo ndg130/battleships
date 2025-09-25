@@ -112,7 +112,8 @@ export const isShipOverflowing = (orientation, gridSize, shipSize, cellIndex) =>
  * @returns {boolean} True if the ship is clashing, false otherwise
  */
 export const isShipClashing = (shipCells, allCells) => {
-    return shipCells.some(cell => allCells.includes(cell));
+    const flatCells = allCells.flat();
+    return shipCells.some(cell => flatCells.includes(cell));
 };
 
 /** 
@@ -128,6 +129,7 @@ export default function useBattleshipGame(gridSize, battleShips) {
     const [hitCells, setHitCells] = useState([]); // cells that have been previously entered
     const [move, setMove] = useState('');
     const [message, setMessage] = useState('');
+    const [sunkenShips, setSunkenShips] = useState([]);
 
     // ---------------- UTILS ----------------
 
@@ -157,7 +159,7 @@ export default function useBattleshipGame(gridSize, battleShips) {
             }
             
             if (singleShipCells.length > 0 && !isShipClashing(singleShipCells, allCells)) {
-                allCells.push(...singleShipCells); // update local
+                allCells.push(singleShipCells); // update local
                 isPlaced = true;
             }
         }
@@ -172,9 +174,11 @@ export default function useBattleshipGame(gridSize, battleShips) {
     const RandomlyPlaceShips = (ships) => {
         let allCells = [];
         ships.forEach((ship) => {
-            allCells = PlaceShip(ship, allCells);
+            PlaceShip(ship, allCells);
         });
         setShipCells(allCells);
+        
+        
         setRemainingCells(allCells);
     }
     
@@ -185,6 +189,8 @@ export default function useBattleshipGame(gridSize, battleShips) {
     const initGame = () => {
         setShipCells([]);
         setHitCells([]);
+        setRemainingCells([]);
+        setSunkenShips([]);
         setMove('');
         setMessage('');
         RandomlyPlaceShips(battleShips);
@@ -205,9 +211,25 @@ export default function useBattleshipGame(gridSize, battleShips) {
      */
     const handleHit = (index) => {
         setHitCells(prev => [...prev, index]);
-        setRemainingCells(prev => prev.filter(cell => cell !== index));
+
+        setRemainingCells(prevShips => {
+            const updatedShips = prevShips.map(ship => 
+                ship.includes(index) ? ship.filter(cell => cell !== index) : ship
+            );
+
+            // check if ship was sunk
+            updatedShips.forEach((ship, i) => {
+                if (ship.length === 0 && !sunkenShips.includes(i)) {
+                    handleMessage(`You sank ship #${i + 1}!`);
+                    setSunkenShips(prev => [...prev, i]); // mark as sunk
+                }
+            });
+
+            return updatedShips;
+        });
+
         handleMessage('You hit a ship!');
-    }
+    };
 
     /**
      * Handles a miss
@@ -228,15 +250,27 @@ export default function useBattleshipGame(gridSize, battleShips) {
         // move is null or empty
         if (!move || move.trim().length === 0) {
             handleMessage('Please enter a valid cell number');
+            setMove('');
             return;
         }
 
-        const cellNumber = move;
-        const index = convertCellNumberToIndex(cellNumber, gridSize);
+        const trimmedMove = move.trim().toUpperCase();
+
+        // validate format: letter + 1–2 digits (e.g. A1, B10)
+
+        const formatOnly = /^[A-Z][0-9]{1,2}$/;
+        if (!formatOnly.test(trimmedMove)) {
+            handleMessage('Please enter a valid cell like A1 or J10');
+            setMove('');
+            return;
+        }
+
+        const index = convertCellNumberToIndex(trimmedMove, gridSize);
 
         // check if index is within total grid cells
         if(index < 0 || index >= gridSize * gridSize) {
-            handleMessage('Please enter a valid cell number');
+            handleMessage('Please enter a valid cell within the grid coordinate range');
+            setMove('');
             return;
         }
         // check if cell has already been hit
@@ -246,9 +280,10 @@ export default function useBattleshipGame(gridSize, battleShips) {
             return;
         }
         // if move cell is a ship cell
-        else if(shipCells.includes(index)){
+        else if(shipCells.flat().includes(index)){
             handleHit(index);
-        } else {
+        } 
+        else {
             handleMiss(index);
         }
         setMove('');
@@ -259,12 +294,16 @@ export default function useBattleshipGame(gridSize, battleShips) {
     // initialise the game
     useEffect(() => {
         initGame(gridSize);
+        
     }, [])
 
     // check if all ship cells have been hit to end game
     useEffect(() => {
-        const hitsOnShips = hitCells.filter(cell => shipCells.includes(cell));
-        if (hitsOnShips.length === shipCells.length && shipCells.length > 0) {
+        /* console.log(shipCells);
+        console.log(hitCells);
+        console.log(remainingCells); */
+        const hitsOnShips = hitCells.filter(cell => shipCells.flat().includes(cell));
+        if (hitsOnShips.length === shipCells.flat().length && shipCells.length > 0) {
             handleMessage('You won!');
         }
     }, [hitCells, shipCells]);
@@ -272,6 +311,7 @@ export default function useBattleshipGame(gridSize, battleShips) {
     return {
         shipCells,
         remainingCells,
+        sunkenShips,
         hitCells,
         move,
         message,

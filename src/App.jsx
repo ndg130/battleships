@@ -8,7 +8,7 @@ function App() {
         {
             id: 1,
             name: 'Battleship',
-            size: 1
+            size: 5
         },
         {
             id: 2,
@@ -55,18 +55,19 @@ function App() {
                     className='controls__input'
                     value={move}
                     type="text"
+                    maxLength={Math.abs(gridSize * gridSize).toString().length + 1}
                     onChange={(e) => setMove(e.target.value.toUpperCase())}
                     placeholder='Enter a cell (e.g. A6)'
                     autoComplete='off'
                     autoCorrect='off'
                     autoCapitalize='on'
-                    disabled={remainingCells.length === 0 ? 'disabled' : ''}
+                    disabled={remainingCells.flat().length === 0 ? 'disabled' : ''}
                     />
-                    {remainingCells.length > 0 && (
+                    {remainingCells.flat().length > 0 && (
                         <button type="submit" className='controls__button'>Submit</button>
                     )}
 
-                    {remainingCells.length === 0 && (
+                    {remainingCells.flat().length === 0 && (
                         <button type="button" className='controls__button' onClick={initGame}>Restart</button>
                     )}
                 </form>

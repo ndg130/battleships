@@ -241,20 +241,6 @@ export default function useBattleshipGame(gridSize, battleShips) {
     }
 
     /**
-     * Check if the ship was sunk
-     */
-    const checkIfShipWasSunk = (index) => {
-        // check array position in shipCells
-        const shipIndex = shipCells.findIndex(ship => ship.includes(index));
-        console.log('shipIndex', shipIndex);
-        const shipRemainingCells = remainingCells[shipIndex];
-        console.log('shipRemainingCells', shipRemainingCells);
-        if (shipRemainingCells.length === 0) {
-            handleMessage('You sank a ship!');
-        }
-    }
-
-    /**
      * Handles a move
      * @param {Event} e - The event
      */
@@ -283,13 +269,9 @@ export default function useBattleshipGame(gridSize, battleShips) {
         }
         // if move cell is a ship cell
         else if(shipCells.flat().includes(index)){
-            console.log('hit');
             handleHit(index);
-            checkIfShipWasSunk(index);
-
         } 
         else {
-            console.log('miss');
             handleMiss(index);
         }
         setMove('');
@@ -305,9 +287,9 @@ export default function useBattleshipGame(gridSize, battleShips) {
 
     // check if all ship cells have been hit to end game
     useEffect(() => {
-        console.log(shipCells);
+        /* console.log(shipCells);
         console.log(hitCells);
-        console.log(remainingCells);
+        console.log(remainingCells); */
         const hitsOnShips = hitCells.filter(cell => shipCells.flat().includes(cell));
         if (hitsOnShips.length === shipCells.flat().length && shipCells.length > 0) {
             handleMessage('You won!');
@@ -317,6 +299,7 @@ export default function useBattleshipGame(gridSize, battleShips) {
     return {
         shipCells,
         remainingCells,
+        sunkenShips,
         hitCells,
         move,
         message,

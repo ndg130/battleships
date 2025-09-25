@@ -250,15 +250,27 @@ export default function useBattleshipGame(gridSize, battleShips) {
         // move is null or empty
         if (!move || move.trim().length === 0) {
             handleMessage('Please enter a valid cell number');
+            setMove('');
             return;
         }
 
-        const cellNumber = move;
-        const index = convertCellNumberToIndex(cellNumber, gridSize);
+        const trimmedMove = move.trim().toUpperCase();
+
+        // validate format: letter + 1–2 digits (e.g. A1, B10)
+
+        const formatOnly = /^[A-Z][0-9]{1,2}$/;
+        if (!formatOnly.test(trimmedMove)) {
+            handleMessage('Please enter a valid cell like A1 or J10');
+            setMove('');
+            return;
+        }
+
+        const index = convertCellNumberToIndex(trimmedMove, gridSize);
 
         // check if index is within total grid cells
         if(index < 0 || index >= gridSize * gridSize) {
-            handleMessage('Please enter a valid cell number');
+            handleMessage('Please enter a valid cell within the grid coordinate range');
+            setMove('');
             return;
         }
         // check if cell has already been hit

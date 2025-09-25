@@ -55,6 +55,7 @@ function App() {
                     className='controls__input'
                     value={move}
                     type="text"
+                    maxLength={Math.abs(gridSize * gridSize).toString().length + 1}
                     onChange={(e) => setMove(e.target.value.toUpperCase())}
                     placeholder='Enter a cell (e.g. A6)'
                     autoComplete='off'

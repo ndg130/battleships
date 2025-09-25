@@ -139,17 +139,35 @@ describe("useBattleshipGame hook", () => {
     });
 
 
-    test("handleMove with an invalid input does not update state", () => {
+    test("handleMove with an input outside of range does not update state", () => {
         const battleShips = [{id: 1, name: 'Battleship', size: 5}];
         const { result } = renderHook(() => useBattleshipGame(10, battleShips));
 
         act(() => {
             result.current.setMove('Z1');
+        })
+        act(() => {
             result.current.handleMove({preventDefault: () => {}});
         }) 
 
-        expect(result.current.move).toBe('Z1');
-        expect(result.current.message).toBe('Please enter a valid cell number');
+        expect(result.current.move).toBe('');
+        expect(result.current.message).toBe('Please enter a valid cell within the grid coordinate range');
+
+    });
+
+    test("handleMove with an invalid input does not update state", () => {
+        const battleShips = [{id: 1, name: 'Battleship', size: 5}];
+        const { result } = renderHook(() => useBattleshipGame(10, battleShips));
+
+        act(() => {
+            result.current.setMove('Z1A');
+        })
+        act(() => {
+            result.current.handleMove({preventDefault: () => {}});
+        }) 
+
+        expect(result.current.move).toBe('');
+        expect(result.current.message).toBe('Please enter a valid cell like A1 or J10');
 
     });
 

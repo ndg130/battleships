@@ -8,7 +8,7 @@ function App() {
         {
             id: 1,
             name: 'Battleship',
-            size: 5
+            size: 1
         },
         {
             id: 2,
@@ -35,7 +35,7 @@ function App() {
 
     return (
         <main>
-            <h1 style={{color: 'white', textAlign: 'center'}}>{shipCells}</h1>
+            <h1 style={{color: 'white', textAlign: 'center'}}>Battleships</h1>
             <div id='battleGrid'>
                 <Grid 
                     gridSize={gridSize}

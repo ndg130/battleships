@@ -1,0 +1,232 @@
+/* Base font + background */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+    background: rgb(17, 4, 44);
+}
+
+body {
+    height: 100vh;
+}
+
+main {
+    max-width: 50rem;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ---------------- GRID BLOCK ---------------- */
+.grid {
+    margin: 20px auto 0;
+    background-color: rgb(208, 239, 239);
+    display: grid;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.grid--size-10 {
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    width: 500px;
+    height: 500px;
+}
+
+.grid--size-12 {
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    width: 500px;
+    height: 500px;
+}
+
+/* ---------------- CELL BLOCK ---------------- */
+.cell {
+    height: 100%;
+    background: #f1f1f1;
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
+    position: relative;
+}
+
+.cell:hover {
+    cursor: pointer;
+    background: #e5e5e5;
+}
+
+.cell__wrapper {
+    position: relative;
+}
+
+.cell--size-10 {
+    width: 50px;
+    height: 50px;
+}
+
+.cell--state-default {
+    background: #f1f1f1;
+}
+
+.cell--state-empty-hit {
+    background: #3cf1f4;
+}
+
+.cell--state-ship-hit {
+    background: red;
+}
+
+/* CELL ELEMENTS */
+.cell__label {
+    color: white;
+    position: absolute;
+}
+
+.cell__label--col {
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cell__label--row {
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* ---------------- CONTROLS BLOCK ---------------- */
+.controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls__form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls__input {
+    margin: 0 10px 0 0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 2px solid #b79af1;
+    background-color: #f1f1f1;
+    color: black;
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.controls__input[disabled] {
+    cursor: not-allowed;
+    pointer-events: none;
+    border-color: rgb(162, 158, 158);
+    background-color: rgb(203, 203, 203);
+}
+
+.controls__button {
+    border-radius: 5px;
+    border: 1px solid gray;
+    background-color: #b79af1;
+    color: #342651;
+    height: 2rem;
+    font-size: 1rem;
+    padding: 21px 15px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.controls__button:hover {
+    cursor: pointer;
+    background-color: #473470;
+    color: white;
+}
+
+.controls__message {
+    height: 20px;
+    color: white;
+}
+
+.controls__message--hidden {
+    visibility: hidden;
+}
+
+.controls__message--visible {
+    visibility: visible;
+}
+
+/* ---------------- MEDIA QUERIES ---------------- */
+
+/* Tablets / medium screens */
+@media (max-width: 768px) {
+    .grid--size-10 {
+        width: 400px;
+        height: 400px;
+    }
+
+    .cell--size-10 {
+        width: 40px;
+        height: 40px;
+    }
+
+    .cell__label--col {
+        top: -16px;
+        font-size: 0.8rem;
+    }
+
+    .cell__label--row {
+        left: -16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Small tablets & large phones */
+@media (max-width: 640px) {
+    .grid--size-10 {
+        width: 300px;
+        height: 300px;
+    }
+
+    .cell--size-10 {
+        width: 30px;
+        height: 30px;
+    }
+
+    .cell__label--col {
+        top: -14px;
+        font-size: 0.7rem;
+    }
+
+    .cell__label--row {
+        left: -14px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+    .grid--size-10 {
+        width: 250px;
+        height: 250px;
+    }
+
+    .cell--size-10 {
+        width: 25px;
+        height: 25px;
+    }
+
+    .cell__label--col {
+        top: -12px;
+        font-size: 0.65rem;
+    }
+
+    .cell__label--row {
+        left: -12px;
+        font-size: 0.65rem;
+    }
+}

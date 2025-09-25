@@ -20,8 +20,8 @@ describe("Utility functions", () => {
     });
 
     test("generates a random number within a squared range", () => {
-        expect(pickRandomStartingPoint(10)).toBeLessThanOrEqual(100);
-        expect(pickRandomStartingPoint(10)).toBeGreaterThanOrEqual(1);
+        expect(pickRandomStartingPoint(10)).toBeLessThanOrEqual(99);
+        expect(pickRandomStartingPoint(10)).toBeGreaterThanOrEqual(0);
     });
 
     test("generates a horizontal ship", () => {
@@ -58,8 +58,8 @@ describe("useBattleshipGame hook", () => {
         const { result } = renderHook(() => useBattleshipGame(10, battleShips));
         act(() => {result.current.initGame();});
 
-        expect(result.current.shipCells.length).toBeGreaterThan(0);
-        expect(result.current.remainingCells.length).toBe(battleShips.reduce((acc, ship) => acc + ship.size, 0));
+        expect(result.current.shipCells.flat().length).toBeGreaterThan(0);
+        expect(result.current.remainingCells.flat().length).toBe(battleShips.reduce((acc, ship) => acc + ship.size, 0));
         expect(result.current.hitCells.length).toBe(0);
         expect(result.current.move).toBe('');
         expect(result.current.message).toBe('');
@@ -76,13 +76,14 @@ describe("useBattleshipGame hook", () => {
         const cellIndex = 20;
 
         act(() => {
-            result.current.setShipCells([20, 21, 22, 23]);
-            result.current.setRemainingCells([20, 21, 22, 23]);
+            result.current.setShipCells([[20, 21, 22, 23]]);
+            result.current.setRemainingCells([[20, 21, 22, 23]]);
         });
 
         act(() => {
             result.current.handleHit(cellIndex);
         });
+
         expect(result.current.hitCells).toContain(cellIndex);
         expect(result.current.remainingCells).not.toContain(cellIndex);
         expect(result.current.message).toBe("You hit a ship!");
@@ -99,8 +100,8 @@ describe("useBattleshipGame hook", () => {
         const cellIndex = 30;
 
         act(() => {
-            result.current.setShipCells([20, 21, 22, 23]);
-            result.current.setRemainingCells([20, 21, 22, 23]);
+            result.current.setShipCells([[20, 21, 22, 23]]);
+            result.current.setRemainingCells([[20, 21, 22, 23]]);
         });
 
         act(() => {
@@ -112,17 +113,61 @@ describe("useBattleshipGame hook", () => {
         expect(result.current.message).toBe("You missed!");
     });
 
-    test("handleMove with an invalid input does not update state", () => {
+    test("handleHit shows sunken ship message", () => {
+        const battleShips = [{ id: 1, name: "Battleship", size: 4 }, { id: 2, name: "Destroyer", size: 3 }];
+        const { result } = renderHook(() => useBattleshipGame(10, battleShips));
+
+        act(() => {
+            result.current.initGame();
+        });
+
+        const cellIndex = 20;
+
+        act(() => {
+            result.current.setShipCells([[20, 21, 22, 23], [1, 2, 3, 4]]);
+            result.current.setRemainingCells([[20]]);
+            result.current.setHitCells([21, 22, 23]);
+        });
+
+        act(() => {
+            result.current.handleHit(cellIndex);
+        });
+
+        expect(result.current.hitCells).toContain(cellIndex);
+        expect(result.current.remainingCells[0]).toEqual([]);
+        expect(result.current.message).toBe("You sank ship #1!");
+    });
+
+
+    test("handleMove with an input outside of range does not update state", () => {
         const battleShips = [{id: 1, name: 'Battleship', size: 5}];
         const { result } = renderHook(() => useBattleshipGame(10, battleShips));
 
         act(() => {
             result.current.setMove('Z1');
+        })
+        act(() => {
             result.current.handleMove({preventDefault: () => {}});
         }) 
 
-        expect(result.current.move).toBe('Z1');
-        expect(result.current.message).toBe('Please enter a valid cell number');
+        expect(result.current.move).toBe('');
+        expect(result.current.message).toBe('Please enter a valid cell within the grid coordinate range');
+
+    });
+
+    test("handleMove with an invalid input does not update state", () => {
+        const battleShips = [{id: 1, name: 'Battleship', size: 5}];
+        const { result } = renderHook(() => useBattleshipGame(10, battleShips));
+
+        act(() => {
+            result.current.setMove('Z1A');
+        })
+        act(() => {
+            result.current.handleMove({preventDefault: () => {}});
+        }) 
+
+        expect(result.current.move).toBe('');
+        expect(result.current.message).toBe('Please enter a valid cell like A1 or J10');
 
     });
 
@@ -131,8 +176,8 @@ describe("useBattleshipGame hook", () => {
         const { result } = renderHook(() => useBattleshipGame(10, battleShips));
 
         act(() => {
-            result.current.setShipCells([0,1,2,3,4]);
-            result.current.setRemainingCells([0,2,3,4]);
+            result.current.setShipCells([[0,1,2,3,4]]);
+            result.current.setRemainingCells([[0,2,3,4]]);
             result.current.setHitCells([1]);
             result.current.setMove('A2');
         });
@@ -150,8 +195,8 @@ describe("useBattleshipGame hook", () => {
         const { result } = renderHook(() => useBattleshipGame(10, battleShips));
 
         act(() => {
-            result.current.setShipCells([0]);
-            result.current.setRemainingCells([0]);
+            result.current.setShipCells([[0]]);
+            result.current.setRemainingCells([[0]]);
             result.current.setMove('A1');
         });
         act(() => {
@@ -168,8 +213,8 @@ describe("useBattleshipGame hook", () => {
 
         act(() => {
             result.current.setMove('A1');
-            result.current.setShipCells([0]);
-            result.current.setRemainingCells([0]);
+            result.current.setShipCells([[0]]);
+            result.current.setRemainingCells([[0]]);
         })
         act(() => {
             result.current.handleMove({preventDefault: () => {}});

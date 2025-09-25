@@ -108,6 +108,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 300px;
 }
 
 .controls__input {
@@ -150,6 +151,9 @@ main {
 .controls__message {
     height: 20px;
     color: white;
+    font-size: 1rem;
+    width: 100%;
+    text-align: center;
 }
 
 .controls__message--hidden {
@@ -205,6 +209,20 @@ main {
     .cell__label--row {
         left: -14px;
         font-size: 0.7rem;
+    }
+
+    .controls__message {
+        font-size: 0.9rem;
+    }
+
+    .controls__input {
+        font-size: 0.9rem;
+    }
+
+
+
+    .controls__button {
+        font-size: 0.9rem;
     }
 }
 

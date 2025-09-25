@@ -35,7 +35,7 @@ function App() {
 
     return (
         <main>
-            <h1 style={{color: 'white', textAlign: 'center'}}>{shipCells[0]}</h1>
+            <h1 style={{color: 'white', textAlign: 'center'}}>Battleships</h1>
             <div id='battleGrid'>
                 <Grid 
                     gridSize={gridSize}
@@ -55,6 +55,7 @@ function App() {
                     className='controls__input'
                     value={move}
                     type="text"
+                    maxLength={Math.abs(gridSize * gridSize).toString().length + 1}
                     onChange={(e) => setMove(e.target.value.toUpperCase())}
                     placeholder='Enter a cell (e.g. A6)'
                     autoComplete='off'
